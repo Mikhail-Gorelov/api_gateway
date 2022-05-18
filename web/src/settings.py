@@ -41,6 +41,9 @@ SWAGGER_URL = os.environ.get('SWAGGER_URL')
 API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
 
+AUTHORIZATION_API_URL = os.environ.get('AUTHORIZATION_API_URL')
+AUTHORIZATION_API_KEY = os.environ.get('AUTHORIZATION_API_KEY')
+
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
@@ -64,6 +67,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'main.apps.MainConfig',
+    'routers.auth_microservice.apps.AuthMicroserviceConfig'
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
