@@ -41,8 +41,13 @@ SWAGGER_URL = os.environ.get('SWAGGER_URL')
 API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
 
+REQUEST_SEND_COOKIES = True
+
 AUTHORIZATION_API_URL = os.environ.get('AUTHORIZATION_API_URL')
 AUTHORIZATION_API_KEY = os.environ.get('AUTHORIZATION_API_KEY')
+
+PRODUCTS_API_URL = os.environ.get('PRODUCTS_API_URL')
+PRODUCTS_API_KEY = os.environ.get('PRODUCTS_API_KEY')
 
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 
@@ -67,7 +72,8 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'main.apps.MainConfig',
-    'routers.auth_microservice.apps.AuthMicroserviceConfig'
+    'routers.auth_microservice.apps.AuthMicroserviceConfig',
+    'routers.products_microservice.apps.ProductsMicroserviceConfig'
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
