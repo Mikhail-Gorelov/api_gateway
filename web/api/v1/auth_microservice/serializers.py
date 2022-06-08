@@ -8,15 +8,16 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=7)
 
 
-class SignUpSerializer(serializers.Serializer):
-    first_name = serializers.CharField(min_length=2, max_length=100, required=True)
-    last_name = serializers.CharField(min_length=2, max_length=100, required=True)
+class SignUpEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+    password = serializers.CharField(min_length=7)
+    password1 = serializers.CharField(min_length=7)
+
+
+class SignUpPhoneSerializer(serializers.Serializer):
     phone_number = serializers.CharField(min_length=7, required=True)
     password = serializers.CharField(min_length=7)
     password1 = serializers.CharField(min_length=7)
-    birthday = serializers.DateField(required=False)
-    gender = serializers.ChoiceField(required=False, choices=choices.GenderChoice.choices)
 
 
 class VerifyEmailSerializer(serializers.Serializer):

@@ -1,7 +1,12 @@
+from datetime import datetime
+
+from django.utils import timezone
 from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.cache import cache
+from dateutil import parser
 
 from .services import AuthorizationService
 
@@ -17,17 +22,38 @@ class LoginView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         service = AuthorizationService(request=request, url='api/v1/sign-in/')
         response = service.service_response(method="post", data=serializer.data)
+        update_token = AuthorizationService(request=request, url='/api/v1/set-data-jwt/')
+        response_update_token = update_token.service_response(method="post", data=serializer.data)
+        token = response_update_token.data.get('access')
+        cache_key = cache.make_key('access_token', token)
+        access_token_lifetime = parser.parse(response.data.get('access_token_expiration')) - timezone.now()
+        if cache_key not in cache:
+            cache.set(cache_key, response.data, timeout=access_token_lifetime.total_seconds())
+        response.data['access_token'] = response_update_token.data['access']
+        response.data['refresh_token'] = response_update_token.data['refresh']
         return Response(response.data)
 
 
-class SignUpView(CreateAPIView):
+class SignUpEmailView(CreateAPIView):
     permission_classes = (AllowAny,)
-    serializer_class = serializers.SignUpSerializer
+    serializer_class = serializers.SignUpEmailSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        service = AuthorizationService(request=request, url='api/v1/sign-up/')
+        service = AuthorizationService(request=request, url='api/v1/sign-up/email/')
+        response = service.service_response(method="post", data=serializer.data)
+        return Response(response.data)
+
+
+class SignUpPhoneView(CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.SignUpPhoneSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = AuthorizationService(request=request, url='api/v1/sign-up/phone/')
         response = service.service_response(method="post", data=serializer.data)
         return Response(response.data)
 
@@ -69,9 +95,8 @@ class PasswordResetConfirmView(CreateAPIView):
 
 
 class LogoutView(APIView):
-    permission_classes = (AllowAny,)
-
     def post(self, request, *args, **kwargs):
         service = AuthorizationService(request=request, url='api/v1/logout/')
         response = service.service_response(method="post")
+        cache.delete('access_token')
         return Response(response.data)

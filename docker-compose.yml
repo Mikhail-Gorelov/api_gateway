@@ -96,6 +96,9 @@ volumes:
   redis_socket:
 
 networks:
+  default:
+    external:
+      name: web-shop
   microservice_network:
     driver: bridge
     name: local_microservice_network
