@@ -6,4 +6,6 @@ class ProductsService(MicroServiceConnect):
     service = settings.PRODUCTS_API_URL
 
     def custom_headers(self) -> dict:
-        return {'Host': self.request.get_host()}
+        return {
+            'Host': self.request.get_host(),
+        }
