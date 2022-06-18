@@ -4,6 +4,7 @@ from microservice_request.services import MicroServiceConnect
 class ProductsService(MicroServiceConnect):
     api_key = settings.PRODUCTS_API_KEY
     service = settings.PRODUCTS_API_URL
+    SEND_COOKIES = False
 
     def custom_headers(self) -> dict:
         return {

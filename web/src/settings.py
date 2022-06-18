@@ -41,8 +41,6 @@ SWAGGER_URL = os.environ.get('SWAGGER_URL')
 API_KEY_HEADER = os.environ.get('API_KEY_HEADER')
 API_KEY = os.environ.get('API_KEY')
 
-REQUEST_SEND_COOKIES = True
-
 AUTHORIZATION_API_URL = os.environ.get('AUTHORIZATION_API_URL')
 AUTHORIZATION_API_KEY = os.environ.get('AUTHORIZATION_API_KEY')
 
