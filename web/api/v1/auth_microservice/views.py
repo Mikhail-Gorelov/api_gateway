@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.cache import cache
 
+from .serializers import TokenRefreshSerializer
 from .services import AuthorizationService
 
 from . import serializers
@@ -86,10 +87,32 @@ class PasswordResetConfirmView(CreateAPIView):
 
 
 class LogoutView(APIView):
+    permission_classes = (AllowAny,)
+
     def post(self, request, *args, **kwargs):
         service = AuthorizationService(request=request, url='api/v1/logout/')
         response = service.service_response(method="post")
-        cache_key = cache.make_key('access_token', response.data['access_token'])
-        if cache_key in cache:
-            cache.delete(cache_key)
+        # cache_key = cache.make_key('access_token', response.data['access_token'])
+        # if cache_key in cache:
+        #     cache.delete(cache_key)
+        return Response(response.data)
+
+
+class GetUserView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        service = AuthorizationService(request=request, url='/api/v1/user-profile/')
+        response = service.service_response(method="get")
+        return Response(response.data)
+
+
+class TokenRefreshView(CreateAPIView):
+    serializer_class = TokenRefreshSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = AuthorizationService(request=request, url='api/v1/refresh-jwt/')
+        response = service.service_response(method="post", data=serializer.data)
         return Response(response.data)

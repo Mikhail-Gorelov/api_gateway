@@ -47,6 +47,9 @@ AUTHORIZATION_API_KEY = os.environ.get('AUTHORIZATION_API_KEY')
 PRODUCTS_API_URL = os.environ.get('PRODUCTS_API_URL')
 PRODUCTS_API_KEY = os.environ.get('PRODUCTS_API_KEY')
 
+CART_API_KEY = os.environ.get('CART_API_KEY')
+CART_API_URL = os.environ.get('CART_API_URL')
+
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

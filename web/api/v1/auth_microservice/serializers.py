@@ -33,3 +33,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     new_password2 = serializers.CharField(max_length=128)
     uid = serializers.CharField()
     token = serializers.CharField()
+
+
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
