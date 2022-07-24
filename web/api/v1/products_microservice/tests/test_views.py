@@ -41,6 +41,17 @@ def test_hot_products_list(client, mocker, list_response):
     product_service_mock().json.return_value = list_response
     product_service_mock().status_code = 200
     response = client.get(url)
+
+    product_request_to_service = mocker.patch.object(ProductsService, 'request_to_service')
+    product_request_to_service(method='get')
+    product_request_to_service.assert_called_once_with(method='get')
+
+    product_service_response = mocker.patch.object(ProductsService, 'service_response')
+    product_service_response(method='get', url='/api/v1/hot-products/', headers=expected_headers, cookies=channel_cookie)
+    product_service_response.assert_called_once_with(method='get', url='/api/v1/hot-products/', headers=expected_headers,
+                                                 cookies=channel_cookie)
+
+    assert product_service_mock.call_count == 4
     assert response.status_code == status.HTTP_200_OK
     assert isinstance(response.data, dict)
     assert response.data == list_response

@@ -58,6 +58,19 @@ class ProductDetailView(GenericAPIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, **kwargs):
-        service = ProductsService(request=request, url=f"/api/v1/product/{kwargs.get('pk')}")
+        service = ProductsService(request=request, url=f"/api/v1/product/{kwargs.get('pk')}/")
         response = service.service_response(method="get")
+        return Response(response.data)
+
+
+class HotProductsDetailView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        channel_cookie = {
+            'country': 'RU',
+            'currency_code': 'RUB',
+        }
+        service = ProductsService(request=request, url=f"/api/v1/hot-product/{kwargs.get('pk')}/")
+        response = service.service_response(method="get", cookies=channel_cookie)
         return Response(response.data)
