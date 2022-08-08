@@ -16,8 +16,8 @@ class HotProductsView(APIView):
     @swagger_auto_schema(**s.hot_products_get_schema)
     def get(self, request: Request):
         channel_cookie = {
-            'country': 'RU',
-            'currency_code': 'RUB',
+            'country': 'DE',
+            'currency_code': 'EUR',
         }
         service = ProductsService(request=request, url=f"/api/v1/hot-products/")
         response = service.service_response(method="get", params=request.query_params, cookies=channel_cookie)
@@ -68,8 +68,8 @@ class HotProductsDetailView(GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         channel_cookie = {
-            'country': 'RU',
-            'currency_code': 'RUB',
+            'country': 'DE',
+            'currency_code': 'EUR',
         }
         service = ProductsService(request=request, url=f"/api/v1/hot-product/{kwargs.get('pk')}/")
         response = service.service_response(method="get", cookies=channel_cookie)
