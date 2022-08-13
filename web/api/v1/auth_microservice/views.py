@@ -23,12 +23,13 @@ class LoginEmailView(GenericAPIView):
         response = service.service_response(method="post", data=serializer.data)
         token = response.data.get('access_token')
         cache_key = cache.make_key('access_token', token)
-        cache.set(cache_key, response.data, timeout=timedelta(minutes=30).total_seconds())
-        response_gateway = Response(response.data, status=response.status_code)
-        response_gateway.set_cookie('Auth_Cookie', f'Bearer {token}', max_age=timedelta(minutes=30).total_seconds(),
-                                    samesite='Lax')
-        response_gateway.set_cookie('sessionid_api_gateway', response.data.get('session_id'))
-        return response_gateway
+        cache.set(cache_key, response.data['user'], timeout=timedelta(minutes=30).total_seconds())
+        # response_gateway = Response(response.data, status=response.status_code)
+        # response_gateway.set_cookie('Auth_Cookie', f'Bearer {token}', max_age=timedelta(minutes=30).total_seconds(),
+        #                             samesite='Lax')
+        # response_gateway.set_cookie('sessionid_api_gateway', response.data.get('session_id'))
+        print(f'{response.cookies=}', cache.get(cache_key))
+        return response
 
 
 class LoginPhoneView(GenericAPIView):
