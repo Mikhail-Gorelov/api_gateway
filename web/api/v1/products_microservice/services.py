@@ -6,9 +6,10 @@ class ProductsService(MicroServiceConnect):
     api_key = settings.PRODUCTS_API_KEY
     service = settings.PRODUCTS_API_URL
     PROXY_REMOTE_USER = True
+    SEND_COOKIES = True
 
     def custom_headers(self) -> dict:
-        return {
-            'Host': self.request.get_host(),
-            'Remote-User': str(self.request.remote_user.id)
-        }
+        headers = {'Host': self.request.get_host()}
+        if user := self.request.remote_user:
+            headers['Remote-User'] = str(user.id)
+        return headers

@@ -1,9 +1,13 @@
 from datetime import timedelta
+
+from django.utils import timezone
 from rest_framework.generics import GenericAPIView, CreateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from dateutil import parser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from datetime import datetime
 from django.core.cache import cache
 
 from .serializers import TokenRefreshSerializer
@@ -20,16 +24,15 @@ class LoginEmailView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         service = AuthorizationService(request=request, url='api/v1/sign-in/email/')
-        response = service.service_response(method="post", data=serializer.data)
-        token = response.data.get('access_token')
+        response = service.request_to_service(method="post", data=serializer.data)
+        token = response.json().get('access_token')
         cache_key = cache.make_key('access_token', token)
-        cache.set(cache_key, response.data['user'], timeout=timedelta(minutes=30).total_seconds())
-        # response_gateway = Response(response.data, status=response.status_code)
-        # response_gateway.set_cookie('Auth_Cookie', f'Bearer {token}', max_age=timedelta(minutes=30).total_seconds(),
-        #                             samesite='Lax')
-        # response_gateway.set_cookie('sessionid_api_gateway', response.data.get('session_id'))
-        print(f'{response.cookies=}', cache.get(cache_key))
-        return response
+        cache.set(
+            cache_key,
+            response.json()['user'],
+            timeout=(parser.parse(response.json()['access_token_expiration']) - timezone.now()).total_seconds()
+        )
+        return Response(data=response.json())
 
 
 class LoginPhoneView(GenericAPIView):

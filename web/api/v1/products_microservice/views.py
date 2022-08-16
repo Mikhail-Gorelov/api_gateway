@@ -21,7 +21,7 @@ class HotProductsView(APIView):
             'currency_code': 'EUR',
         }
         service = ProductsService(request=request, url=f"/api/v1/products/")
-        response = service.service_response(method="get", params=request.query_params, cookies=channel_cookie)
+        response = service.service_response(method="get", params=request.query_params)
         return Response(response.data)
 
 
