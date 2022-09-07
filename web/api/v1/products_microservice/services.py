@@ -13,3 +13,32 @@ class ProductsService(MicroServiceConnect):
         if user := self.request.remote_user:
             headers['Remote-User'] = str(user.id)
         return headers
+
+
+class SetChannelCookieService:
+    def __init__(self, request, response, microservice_response):
+        self.request = request
+        self.response = response
+        self.microservice_response = microservice_response
+
+    def get_current_channel(self):
+        try:
+            return next(item for item in self.microservice_response.data.get('results')
+                        if item["country"] == self.request.data.get('country'))
+        except StopIteration:
+            return {'country': 'DE'}
+
+    def set_channel_cookie(self):
+        refresh_cookie_path = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE_PATH', '/')
+        cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
+        cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
+        cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
+        self.response.set_cookie(
+            key=settings.CHANNEL_SETTINGS['COOKIE_NAME'],
+            value=self.get_current_channel(),
+            max_age=settings.CHANNEL_SETTINGS['CACHE_ACTIVE_CHANNELS_TIMEOUT'],
+            secure=cookie_secure,
+            httponly=cookie_httponly,
+            samesite=cookie_samesite,
+            path=refresh_cookie_path,
+        )

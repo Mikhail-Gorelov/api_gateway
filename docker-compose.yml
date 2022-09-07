@@ -86,6 +86,7 @@ services:
     restart: unless-stopped
     networks:
       - separated_network
+      - microservice_network
     extra_hosts:
       - "docker-gateway-host:172.17.0.1"
 

@@ -1,18 +1,18 @@
+import ast
 from typing import TYPE_CHECKING, Optional
-from django.contrib.sessions.backends.db import SessionStore
-from django.contrib.sessions.models import Session
+
 import pytz
 from django.conf import settings
+from django.core.cache import cache
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
-from django.core.cache import cache
-import random
 
-from main.services import RemoteUser
+from main.services import RemoteUser, UserChannelService
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
+    from django.http import HttpResponse
 
 
 class HealthCheckMiddleware(MiddlewareMixin):
@@ -48,25 +48,16 @@ class JWTRemoteUserMiddleware:
             user_cache = cache.get(cache_key)
             if user_cache:
                 request.remote_user = RemoteUser(**user_cache)
-        # else:
-            # if not request.session.session_key:
-                # request.session = SessionStore()
-                # request.session['user_id'] = random.randrange(0, 2000000)
-                # request.session.create()
-                # s = Session.objects.get(pk=request.session.session_key)
-                # request.remote_user = RemoteUser(id=s.get_decoded().get('user_id'), full_name='AnonymousUser')
-                # response = self.get_response(request)
-                # response.set_cookie(
-                #     settings.SESSION_COOKIE_NAME,
-                #     request.session.session_key,
-                #     expires=settings.SESSION_COOKIE_AGE,
-                #     max_age=settings.SESSION_COOKIE_AGE
-                # )
-                # return self.get_response(request)
-            # else:
-            #     s = Session.objects.get(pk=request.session.session_key)
-            #     request.remote_user = RemoteUser(id=s.get_decoded().get('user_id'), full_name='AnonymousUser')
-        request.session['user_id'] = 1
-        request.session.modified = True
-        print(request.COOKIES, request.session.session_key)
+        # request.session['user_id'] = 1
+        # request.session.modified = True
+        # print(request.COOKIES, request.session.session_key)
         return self.get_response(request)
+
+
+class UserChannelMiddleware(MiddlewareMixin):
+    def process_response(self, request: 'HttpRequest', response: 'HttpResponse'):
+        channel_cookie = response.cookies.get('reg_country')
+        if not channel_cookie:
+            handler = UserChannelService(request=request, response=response)
+            handler.check_active_channels_cache_key()
+        return response

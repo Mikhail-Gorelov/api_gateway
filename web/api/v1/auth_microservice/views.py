@@ -1,19 +1,17 @@
 from datetime import timedelta
 
+from dateutil import parser
+from django.core.cache import cache
 from django.utils import timezone
 from rest_framework.generics import GenericAPIView, CreateAPIView
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from dateutil import parser
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from datetime import datetime
-from django.core.cache import cache
-
-from .serializers import TokenRefreshSerializer
-from .services import AuthorizationService
 
 from . import serializers
+from .serializers import TokenRefreshSerializer
+from .services import AuthorizationService
 
 
 class LoginEmailView(GenericAPIView):
@@ -145,7 +143,6 @@ class GetUserView(APIView):
     def get(self, request):
         service = AuthorizationService(request=request, url='/api/v1/user-profile/')
         response = service.service_response(method="get")
-        print(request.headers)
         return Response(response.data, status=response.status_code)
 
 

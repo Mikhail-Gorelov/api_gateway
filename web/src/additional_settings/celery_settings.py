@@ -1,5 +1,6 @@
 from os import environ
 
+from celery.schedules import crontab
 from kombu import Exchange, Queue
 
 CELERY_BROKER_URL = environ.get('CELERY_BROKER_URL')
@@ -31,7 +32,9 @@ CELERY_TASK_ROUTES = {
     '*': {'queue': 'celery'},
 }
 
-CELERY_TASK_QUEUES = (Queue('celery', exchange=celery_exchange, queue_arguments={'x-queue-mode': 'lazy'}),)
-
-
-CELERY_BEAT_SCHEDULE = {}
+CELERY_BEAT_SCHEDULE: dict[str, dict] = {
+    "cache_active_channels": {
+        "task": "main.tasks.cache_active_channels",
+        "schedule": crontab(minute="*/20")
+    },
+}

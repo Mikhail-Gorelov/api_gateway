@@ -16,6 +16,8 @@ DEBUG = int(os.environ.get('DEBUG', 0))
 
 ALLOWED_HOSTS: list = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
+CORS_ALLOW_CREDENTIALS = True
+
 AUTH_USER_MODEL = 'main.User'
 
 SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL', 'test@test.com')
@@ -53,6 +55,15 @@ CART_API_URL = os.environ.get('CART_API_URL')
 HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+CHANNEL_SETTINGS = {
+    'COOKIE_NAME': 'reg_country',
+    'FORCED_IP_ADDRESS': '54.93.127.127',
+    'GET_IP_SERVER': 'https://get.geojs.io/v1/ip/country/{ip_address}.json',
+    'CACHE_ACTIVE_CHANNELS_TIMEOUT': 1 * 24 * 60 * 60,
+    'CACHE_ACTIVE_CHANNELS_KEY': 'active_channels',
+    'ACTIVE_CHANNELS_URL': '/api/v1/channel-list/',
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -92,6 +103,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'defender.middleware.FailedLoginMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'main.middleware.UserChannelMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -198,7 +210,6 @@ CSRF_COOKIE_NAME = 'csrftoken_api_gateway'
 
 if DEBUG:
     ROSETTA_SHOW_AT_ADMIN_PANEL = True
-
 
 if JAEGER_AGENT_HOST := os.environ.get('JAEGER_AGENT_HOST'):
     from django_opentracing import DjangoTracing
