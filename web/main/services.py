@@ -1,7 +1,7 @@
 import ast
 import logging
 from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Union
 
 import requests
 from django.conf import settings
@@ -45,7 +45,7 @@ class UserChannelService:
             return {'country': 'DE'}
         return r.json()
 
-    def check_active_channels_cache_key(self) -> None:
+    def set_active_channels_cache_key(self) -> None:
         ip_credentials = self.get_ip_credentials()
         if channel_cache := cache.keys(search=f'*{settings.CHANNEL_SETTINGS["CACHE_ACTIVE_CHANNELS_KEY"]}'):
             decoded_cache = self.decode_cache_key(channel_cache)
@@ -56,11 +56,13 @@ class UserChannelService:
         cache_list = list()
         decoded_cache = ast.literal_eval(channel_cookie[0].split(
             f'{settings.CHANNEL_SETTINGS["CACHE_ACTIVE_CHANNELS_KEY"]}'
-        )[0].replace(':{', '{').replace('}:', '}'))
+        )[0].replace(':{', '{').replace('}:', '}').replace(':[', '').replace(']:', ''))
         cache_list.append(decoded_cache)
         return cache_list
 
-    def get_current_channel(self, decoded_cache: list[dict], ip_credentials: dict):
+    def get_current_channel(self, decoded_cache: Union[list[dict], list[tuple[dict]]], ip_credentials: dict):
+        if type(decoded_cache[0]) is tuple:
+            decoded_cache = decoded_cache[0]
         try:
             return next(item for item in decoded_cache if item['country'] == ip_credentials.get('country'))
         except StopIteration:
@@ -69,16 +71,8 @@ class UserChannelService:
     def set_channel_cookie(self, current_channel: dict):
         if self.request.COOKIES.get('reg_country'):
             return
-        refresh_cookie_path = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE_PATH', '/')
-        cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
-        cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
-        cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
         return self.response.set_cookie(
             key=settings.CHANNEL_SETTINGS['COOKIE_NAME'],
             value=current_channel,
             max_age=settings.CHANNEL_SETTINGS['CACHE_ACTIVE_CHANNELS_TIMEOUT'],
-            secure=cookie_secure,
-            httponly=cookie_httponly,
-            samesite=cookie_samesite,
-            path=refresh_cookie_path,
         )

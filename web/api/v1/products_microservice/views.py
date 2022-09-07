@@ -99,7 +99,7 @@ class ChannelListView(GenericAPIView):
     def get(self, request):
         service = ProductsService(request=request, url=f"/api/v1/channel-list/")
         response = service.service_response(method="get")
-        return Response(response.data)
+        return response
 
 
 class SetChannelCookieView(GenericAPIView):
@@ -109,7 +109,9 @@ class SetChannelCookieView(GenericAPIView):
     def post(self, request):
         service = ProductsService(request=request, url=f"{settings.CHANNEL_SETTINGS['ACTIVE_CHANNELS_URL']}")
         microservice_response = service.service_response(method="get")
-        response = Response({"status": "cookie_installed"})
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response = Response(data=serializer.data)
         handler = SetChannelCookieService(request=request,
                                           response=response,
                                           microservice_response=microservice_response

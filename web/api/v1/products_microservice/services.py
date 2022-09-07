@@ -29,16 +29,8 @@ class SetChannelCookieService:
             return {'country': 'DE'}
 
     def set_channel_cookie(self):
-        refresh_cookie_path = getattr(settings, 'JWT_AUTH_REFRESH_COOKIE_PATH', '/')
-        cookie_secure = getattr(settings, 'JWT_AUTH_SECURE', False)
-        cookie_httponly = getattr(settings, 'JWT_AUTH_HTTPONLY', True)
-        cookie_samesite = getattr(settings, 'JWT_AUTH_SAMESITE', 'Lax')
         self.response.set_cookie(
             key=settings.CHANNEL_SETTINGS['COOKIE_NAME'],
             value=self.get_current_channel(),
             max_age=settings.CHANNEL_SETTINGS['CACHE_ACTIVE_CHANNELS_TIMEOUT'],
-            secure=cookie_secure,
-            httponly=cookie_httponly,
-            samesite=cookie_samesite,
-            path=refresh_cookie_path,
         )

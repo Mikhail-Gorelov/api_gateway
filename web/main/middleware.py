@@ -59,5 +59,5 @@ class UserChannelMiddleware(MiddlewareMixin):
         channel_cookie = response.cookies.get('reg_country')
         if not channel_cookie:
             handler = UserChannelService(request=request, response=response)
-            handler.check_active_channels_cache_key()
+            handler.set_active_channels_cache_key()
         return response
