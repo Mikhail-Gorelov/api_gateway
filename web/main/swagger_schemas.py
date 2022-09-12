@@ -10,6 +10,7 @@ class PaginationQuerySerializer(serializers.Serializer):
     is_bestseller = serializers.BooleanField(required=False)
     category = serializers.IntegerField(required=False)
     category_slug = serializers.CharField(required=False)
+    search = serializers.CharField(required=False)
 
 
 class ProductVariantsSerializer(serializers.Serializer):

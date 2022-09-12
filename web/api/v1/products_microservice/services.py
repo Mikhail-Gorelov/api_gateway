@@ -26,11 +26,11 @@ class SetChannelCookieService:
             return next(item for item in self.microservice_response.data.get('results')
                         if item["country"] == self.request.data.get('country'))
         except StopIteration:
-            return {'country': 'DE'}
+            return {'name': 'Germany'}
 
     def set_channel_cookie(self):
         self.response.set_cookie(
-            key=settings.CHANNEL_SETTINGS['COOKIE_NAME'],
+            key=settings.CHANNEL_SETTINGS['COOKIE']['NAME'],
             value=self.get_current_channel(),
-            max_age=settings.CHANNEL_SETTINGS['CACHE_ACTIVE_CHANNELS_TIMEOUT'],
+            max_age=settings.CHANNEL_SETTINGS['COOKIE']['TIMEOUT'],
         )

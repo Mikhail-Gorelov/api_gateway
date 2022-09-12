@@ -107,7 +107,7 @@ class SetChannelCookieView(GenericAPIView):
     serializer_class = serializers.SetChannelCookieSerializer
 
     def post(self, request):
-        service = ProductsService(request=request, url=f"{settings.CHANNEL_SETTINGS['ACTIVE_CHANNELS_URL']}")
+        service = ProductsService(request=request, url=f"{settings.CHANNEL_SETTINGS['GET_CHANNELS_URL']}")
         microservice_response = service.service_response(method="get")
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -125,6 +125,5 @@ class GetChannelCookieView(GenericAPIView):
 
     def get(self, request):
         if channel_cookie := request.COOKIES.get('reg_country'):
-            cookie_dict = ast.literal_eval(channel_cookie)
-            return Response({'country': cookie_dict['country']})
+            return Response({'name': channel_cookie})
         return Response()

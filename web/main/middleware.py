@@ -56,7 +56,7 @@ class JWTRemoteUserMiddleware:
 
 class UserChannelMiddleware(MiddlewareMixin):
     def process_response(self, request: 'HttpRequest', response: 'HttpResponse'):
-        channel_cookie = response.cookies.get('reg_country')
+        channel_cookie = request.COOKIES.get('reg_country')
         if not channel_cookie:
             handler = UserChannelService(request=request, response=response)
             handler.set_active_channels_cache_key()

@@ -57,12 +57,17 @@ HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 CHANNEL_SETTINGS = {
-    'COOKIE_NAME': 'reg_country',
     'FORCED_IP_ADDRESS': '54.93.127.127',
     'GET_IP_SERVER': 'https://get.geojs.io/v1/ip/country/{ip_address}.json',
-    'CACHE_ACTIVE_CHANNELS_TIMEOUT': 1 * 24 * 60 * 60,
-    'CACHE_ACTIVE_CHANNELS_KEY': 'active_channels',
-    'ACTIVE_CHANNELS_URL': '/api/v1/channel-list/',
+    'GET_CHANNELS_URL': '/api/v1/channel-list/',
+    'CACHE': {
+        'KEY': 'active_channels',
+        'TIMEOUT': 5 * 60,
+    },
+    'COOKIE': {
+        'NAME': 'reg_country',
+        'TIMEOUT': 1 * 60 * 60,
+    },
 }
 
 INSTALLED_APPS = [
