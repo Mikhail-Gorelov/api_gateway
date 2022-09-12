@@ -1,3 +1,7 @@
+import ast
+
+from django.conf import settings
+from django.core.cache import cache
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
@@ -5,10 +9,10 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from . import serializers
 from main.permissions import AuthorizedAccess
+from . import serializers
 from . import swagger_schemas as s
-from .services import ProductsService
+from .services import ProductsService, SetChannelCookieService
 
 
 class HotProductsView(APIView):
@@ -16,19 +20,13 @@ class HotProductsView(APIView):
 
     @swagger_auto_schema(**s.hot_products_get_schema)
     def get(self, request: Request):
-        channel_cookie = {
-            'country': 'DE',
-            'currency_code': 'EUR',
-        }
         service = ProductsService(request=request, url=f"/api/v1/products/")
         response = service.service_response(method="get", params=request.query_params)
-        return Response(response.data)
+        return response
 
 
 class SecureView(GenericAPIView):
     permission_classes = (AuthorizedAccess,)
-
-    # authentication_classes = (AuthorizedAuthentication,)
 
     def get(self, request):
         service = ProductsService(request=request, url='/api/v1/secure/')
@@ -69,12 +67,8 @@ class HotProductsDetailView(GenericAPIView):
 
     @swagger_auto_schema(**s.hot_product_get_schema)
     def get(self, request, *args, **kwargs):
-        channel_cookie = {
-            'country': 'DE',
-            'currency_code': 'EUR',
-        }
         service = ProductsService(request=request, url=f"/api/v1/product/{kwargs.get('pk')}/")
-        response = service.service_response(method="get", params=request.query_params, cookies=channel_cookie)
+        response = service.service_response(method="get", params=request.query_params)
         return Response(response.data)
 
 
@@ -97,3 +91,39 @@ class CategoriesDetailView(GenericAPIView):
         service = ProductsService(request=request, url=f"/api/v1/category/{kwargs.get('pk')}/")
         response = service.service_response(method="get")
         return Response(response.data)
+
+
+class ChannelListView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        service = ProductsService(request=request, url=f"/api/v1/channel-list/")
+        response = service.service_response(method="get")
+        return response
+
+
+class SetChannelCookieView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.SetChannelCookieSerializer
+
+    def post(self, request):
+        service = ProductsService(request=request, url=f"{settings.CHANNEL_SETTINGS['GET_CHANNELS_URL']}")
+        microservice_response = service.service_response(method="get")
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response = Response(data=serializer.data)
+        handler = SetChannelCookieService(request=request,
+                                          response=response,
+                                          microservice_response=microservice_response
+                                          )
+        handler.set_channel_cookie()
+        return response
+
+
+class GetChannelCookieView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        if channel_cookie := request.COOKIES.get('reg_country'):
+            return Response({'name': channel_cookie})
+        return Response()
