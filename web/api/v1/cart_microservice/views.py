@@ -41,12 +41,8 @@ class ItemOrderAddView(GenericAPIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        channel_cookie = {
-            'country': 'DE',
-            'currency_code': 'EUR',
-        }
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         service = CartService(request=request, url="/api/v1/item-order/add/")
-        response = service.service_response(method="post", data=serializer.data, cookies=channel_cookie)
+        response = service.service_response(method="post", data=serializer.data)
         return Response(response.data)

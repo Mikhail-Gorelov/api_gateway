@@ -1,5 +1,5 @@
 import os
-
+from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
 
 from .additional_settings.cacheops_settings import *
@@ -62,11 +62,11 @@ CHANNEL_SETTINGS = {
     'GET_CHANNELS_URL': '/api/v1/channel-list/',
     'CACHE': {
         'KEY': 'active_channels',
-        'TIMEOUT': 5 * 60,
+        'TIMEOUT': 100 * 60,
     },
     'COOKIE': {
         'NAME': 'reg_country',
-        'TIMEOUT': 1 * 60 * 60,
+        'TIMEOUT': 7 * 60 * 60,
     },
 }
 

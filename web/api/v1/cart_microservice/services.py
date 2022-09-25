@@ -9,5 +9,6 @@ class CartService(MicroServiceConnect):
 
     def custom_headers(self) -> dict:
         return {
-            'Remote-User': str(self.request.remote_user.id)
+            # 'Remote-User': str(self.request.remote_user.id)
+            'Remote-User': str(self.request.user.id)
         }
