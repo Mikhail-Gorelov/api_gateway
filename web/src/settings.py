@@ -67,6 +67,7 @@ CHANNEL_SETTINGS = {
     'COOKIE': {
         'NAME': 'reg_country',
         'TIMEOUT': 7 * 60 * 60,
+        'IS_SECURE': True,
     },
 }
 

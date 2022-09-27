@@ -1,7 +1,4 @@
-import ast
-
 from django.conf import settings
-from django.core.cache import cache
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
@@ -127,3 +124,13 @@ class GetChannelCookieView(GenericAPIView):
         if channel_cookie := request.COOKIES.get('reg_country'):
             return Response({'name': channel_cookie})
         return Response()
+
+
+class SearchProductView(APIView):
+    permission_classes = (AllowAny,)
+
+    @swagger_auto_schema(**s.search_product_get_schema)
+    def get(self, request: Request):
+        service = ProductsService(request=request, url=f"/api/v1/search-products/")
+        response = service.service_response(method="get", params=request.query_params)
+        return response

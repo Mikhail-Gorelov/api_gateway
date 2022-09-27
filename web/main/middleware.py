@@ -1,4 +1,3 @@
-import ast
 from typing import TYPE_CHECKING, Optional
 
 import pytz

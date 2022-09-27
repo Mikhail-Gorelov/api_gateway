@@ -1,4 +1,5 @@
 from django.conf import settings
+from urllib.parse import urlencode
 from microservice_request.services import MicroServiceConnect
 
 
@@ -23,14 +24,15 @@ class SetChannelCookieService:
 
     def get_current_channel(self):
         try:
-            return next(item for item in self.microservice_response.data.get('results')
-                        if item["country"] == self.request.data.get('country'))
+            return next(item for item in self.microservice_response.data
+                        if item["name"] == self.request.data.get('country'))
         except StopIteration:
             return {'name': 'Germany'}
 
     def set_channel_cookie(self):
         self.response.set_cookie(
             key=settings.CHANNEL_SETTINGS['COOKIE']['NAME'],
-            value=self.get_current_channel(),
+            value=urlencode(self.get_current_channel()),
             max_age=settings.CHANNEL_SETTINGS['COOKIE']['TIMEOUT'],
+            secure=settings.CHANNEL_SETTINGS['COOKIE']['IS_SECURE'],
         )

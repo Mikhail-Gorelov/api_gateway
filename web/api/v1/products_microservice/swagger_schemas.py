@@ -1,4 +1,4 @@
-from main.swagger_schemas import PaginationQuerySerializer, ProductVariantsSerializer
+from main.swagger_schemas import PaginationQuerySerializer, ProductVariantsSerializer, ProductsSearchSerializer
 
 tags = ['Product']
 
@@ -17,4 +17,8 @@ hot_product_get_schema = {
 
 category_get_schema = {
     'tags': tags
+}
+
+search_product_get_schema = {
+    'query_serializer': ProductsSearchSerializer
 }

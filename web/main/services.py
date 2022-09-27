@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
+from urllib.parse import urlencode
 
 import requests
 from django.conf import settings
@@ -35,7 +36,7 @@ def get_active_channels() -> list[dict]:
         return _cache
     service = CeleryProductsService(url=f"{channels_settings['GET_CHANNELS_URL']}")
     response = service.service_response(method="get")
-    data: list[dict] = response.data.get('results')
+    data: list[dict] = response.data
     cache.set(
         cache_key,
         data,
@@ -69,6 +70,7 @@ class UserChannelService:
     def set_channel_cookie(self, current_channel: dict):
         return self.response.set_cookie(
             key=self.channel_settings['COOKIE']['NAME'],
-            value=current_channel,
+            value=urlencode(current_channel),
             max_age=self.channel_settings['CACHE']['TIMEOUT'],
+            secure=self.channel_settings['COOKIE']['IS_SECURE'],
         )

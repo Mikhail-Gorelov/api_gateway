@@ -16,3 +16,7 @@ class PaginationQuerySerializer(serializers.Serializer):
 class ProductVariantsSerializer(serializers.Serializer):
     price_from = serializers.DecimalField(required=False, max_digits=8, decimal_places=2)
     price_to = serializers.DecimalField(required=False, max_digits=8, decimal_places=2)
+
+
+class ProductsSearchSerializer(serializers.Serializer):
+    search = serializers.CharField(required=False)
