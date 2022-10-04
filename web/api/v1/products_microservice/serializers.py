@@ -10,3 +10,4 @@ class AssessmentSerializer(serializers.Serializer):
 
 class SetChannelCookieSerializer(serializers.Serializer):
     country = CountryField()
+    currency_code = serializers.CharField(max_length=20)

@@ -24,10 +24,15 @@ class SetChannelCookieService:
 
     def get_current_channel(self):
         try:
-            return next(item for item in self.microservice_response.data
-                        if item["name"] == self.request.data.get('country'))
+            return next(
+                item for item in self.microservice_response.data
+                if item["name"] == self.request.data.get('country') and
+                item["currency_code"] == self.request.data.get('currency_code'))
         except StopIteration:
-            return {'name': 'Germany'}
+            return {
+                'name': 'Germany',
+                'currency_code': 'EUR'
+            }
 
     def set_channel_cookie(self):
         self.response.set_cookie(
