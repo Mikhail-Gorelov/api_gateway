@@ -30,7 +30,9 @@ class LoginEmailView(GenericAPIView):
             response.json()['user'],
             timeout=(parser.parse(response.json()['access_token_expiration']) - timezone.now()).total_seconds()
         )
-        return Response(data=response.json())
+        response_gateway = Response(response.json(), status=response.status_code)
+        response_gateway.set_cookie('Auth_Cookie', f'Bearer {token}', max_age=timedelta(minutes=30).total_seconds())
+        return response_gateway
 
 
 class LoginPhoneView(GenericAPIView):

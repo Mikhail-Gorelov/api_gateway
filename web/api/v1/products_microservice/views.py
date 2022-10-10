@@ -81,6 +81,15 @@ class AssessmentView(GenericAPIView):
         return Response(response.data)
 
 
+class AssessmentShowView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        service = ProductsService(request=request, url="/api/v1/assessment/show/")
+        response = service.service_response(method="get", params=request.query_params)
+        return Response(response.data)
+
+
 class CategoriesDetailView(GenericAPIView):
     permission_classes = (AllowAny,)
 

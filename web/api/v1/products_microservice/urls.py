@@ -13,6 +13,7 @@ urlpatterns = [
     path('product/<int:pk>/', views.ProductDetailView.as_view(), name='product-detail'),
     path('channel-list/', views.ChannelListView.as_view(), name='channel-list'),
     path('assessment/', views.AssessmentView.as_view(), name="assessment"),
+    path('assessment/show/', views.AssessmentShowView.as_view(), name="assessment-show"),
     path('set-channel-cookie/', views.SetChannelCookieView.as_view(), name="set-channel-cookie"),
     path('get-channel-cookie/', views.GetChannelCookieView.as_view(), name="get-current-channel-cookie"),
     path('search-products/', views.SearchProductView.as_view(), name='search-products'),

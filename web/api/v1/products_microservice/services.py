@@ -11,6 +11,7 @@ class ProductsService(MicroServiceConnect):
 
     def custom_headers(self) -> dict:
         headers = {'Host': self.request.get_host()}
+        # print(self.request.remote_user)
         if user := self.request.remote_user:
             headers['Remote-User'] = str(user.id)
         return headers

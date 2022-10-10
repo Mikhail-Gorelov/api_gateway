@@ -38,7 +38,7 @@ class JWTRemoteUserMiddleware:
 
     def __call__(self, request: 'HttpRequest'):
         request.remote_user = None
-        if header := request.headers.get('Authorization'):
+        if header := request.COOKIES.get('Auth_Cookie'):
             jwt = header.split(' ')[1]
         else:
             jwt = request.COOKIES.get('access_auth')
@@ -47,9 +47,12 @@ class JWTRemoteUserMiddleware:
             user_cache = cache.get(cache_key)
             if user_cache:
                 request.remote_user = RemoteUser(**user_cache)
+        # print(jwt)
         # request.session['user_id'] = 1
         # request.session.modified = True
         # print(request.COOKIES, request.session.session_key)
+        # print(request.headers.get('Authorization'), request.COOKIES.get('Auth_Cookie'))
+        # print(f'{jwt=}')
         return self.get_response(request)
 
 
