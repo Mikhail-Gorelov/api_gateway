@@ -36,6 +36,15 @@ class CartShowView(GenericAPIView):
         return Response(response.data)
 
 
+class CartTotalView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        service = CartService(request=request, url=f"/api/v1/cart/total/")
+        response = service.service_response(method="get")
+        return Response(response.data)
+
+
 class ItemOrderAddView(GenericAPIView):
     serializer_class = serializers.ItemOrderSerializer
     permission_classes = (AllowAny,)
