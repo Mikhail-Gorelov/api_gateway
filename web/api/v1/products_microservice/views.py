@@ -69,6 +69,15 @@ class HotProductsDetailView(GenericAPIView):
         return Response(response.data)
 
 
+class ProductsVariantView(GenericAPIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, *args, **kwargs):
+        service = ProductsService(request=request, url=f"/api/v1/product-variant/{kwargs.get('pk')}/")
+        response = service.service_response(method="get")
+        return Response(response.data)
+
+
 class AssessmentView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = serializers.AssessmentSerializer
