@@ -6,6 +6,10 @@ class AssessmentSerializer(serializers.Serializer):
     product = serializers.IntegerField()
 
 
+class AssessmentVariantSerializer(serializers.Serializer):
+    product_variant = serializers.IntegerField()
+
+
 class SetChannelCookieSerializer(serializers.Serializer):
     country = CountryField()
     currency_code = serializers.CharField(max_length=20)

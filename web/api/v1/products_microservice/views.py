@@ -90,6 +90,18 @@ class AssessmentView(GenericAPIView):
         return Response(response.data)
 
 
+class AssessmentVariantView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.AssessmentVariantSerializer
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = ProductsService(request=request, url=f"/api/v1/assessment/variant/")
+        response = service.service_response(method="post", data=serializer.data)
+        return Response(response.data)
+
+
 class AssessmentShowView(GenericAPIView):
     permission_classes = (AllowAny,)
 

@@ -27,6 +27,18 @@ class ItemAddView(GenericAPIView):
         return Response(response.data)
 
 
+class ItemDeleteView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.ItemDeleteSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = CartService(request=request, url="/api/v1/item/delete/")
+        response = service.service_response(method="post", data=serializer.data)
+        return Response(response.data)
+
+
 class CartShowView(GenericAPIView):
     permission_classes = (AllowAny,)
 
