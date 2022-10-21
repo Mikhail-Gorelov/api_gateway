@@ -1,0 +1,32 @@
+from typing import NamedTuple
+
+from rest_framework.request import Request
+
+from api.v1.cart_microservice.services import CartService
+
+
+class AddressData(NamedTuple):
+    street_address: str
+    city: str
+    postal_code: str
+    country: str
+
+
+class UserData(NamedTuple):
+    email: str
+    first_name: str
+    last_name: str
+    phone_number: str
+
+
+class CheckoutService:
+    def __init__(self, request: Request, serializer_data: dict):
+        self.user_data = UserData(**serializer_data['credentials'])
+        self.shipping_address = AddressData(**serializer_data['shipping_address'])
+        self.billing_address = AddressData(**serializer_data['billing_address'])
+        self.request = request
+
+    def validate_cart_content(self):
+        service = CartService(request=self.request, url="/api/v1/cart/checkout/")
+        response = service.service_response(method="get")
+        print(response.data)

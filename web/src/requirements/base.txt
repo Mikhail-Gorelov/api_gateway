@@ -38,3 +38,9 @@ pillow==8.1.1
 
 # CountryField
 django-countries==7.3.2
+
+# Phone number field
+django-phonenumber-field[phonenumbers]==6.1.0
+
+# Payment system
+stripe==4.2.0

@@ -39,6 +39,30 @@ class ItemDeleteView(GenericAPIView):
         return Response(response.data)
 
 
+class ItemChangeQuantityView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.ItemChangeQuantitySerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = CartService(request=request, url="/api/v1/item/change-quantity/")
+        response = service.service_response(method="post", data=serializer.data)
+        return Response(response.data)
+
+
+class ItemShowQuantityView(GenericAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.ItemShowQuantitySerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        service = CartService(request=request, url="/api/v1/item/show-quantity/")
+        response = service.service_response(method="post", data=serializer.data)
+        return Response(response.data)
+
+
 class CartShowView(GenericAPIView):
     permission_classes = (AllowAny,)
 

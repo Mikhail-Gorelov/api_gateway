@@ -86,6 +86,7 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'corsheaders',
     'rosetta',
+    'phonenumber_field',
 ]
 
 LOCAL_APPS = [
