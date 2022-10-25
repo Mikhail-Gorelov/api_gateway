@@ -1,8 +1,16 @@
 from typing import NamedTuple
 
+from django.conf import settings
+from microservice_request.services import ConnectionService
 from rest_framework.request import Request
-
+from rest_framework.response import Response
 from api.v1.cart_microservice.services import CartService
+
+
+class PaymentService(ConnectionService):
+    api_key = settings.PAYMENT_API_KEY
+    service = settings.PAYMENT_API_URL
+    SEND_COOKIES = True
 
 
 class AddressData(NamedTuple):
@@ -29,4 +37,4 @@ class CheckoutService:
     def validate_cart_content(self):
         service = CartService(request=self.request, url="/api/v1/cart/checkout/")
         response = service.service_response(method="get")
-        print(response.data)
+        return response.data
