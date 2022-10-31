@@ -60,7 +60,7 @@ HEALTH_CHECK_URL = os.environ.get('HEALTH_CHECK_URL', '/application/health/')
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 CHANNEL_SETTINGS = {
-    'FORCED_IP_ADDRESS': '54.93.127.127',
+    'FORCED_IP_ADDRESS': '79.199.223.193',
     'GET_IP_SERVER': 'https://get.geojs.io/v1/ip/country/{ip_address}.json',
     'GET_CHANNELS_URL': '/api/v1/channel-list/',
     'CACHE': {

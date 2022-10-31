@@ -58,7 +58,7 @@ class UserChannelService:
         r = requests.get(ip_server_url)
         if not r.status_code == HTTP_200_OK:
             logging.error(f'Ip server returned {r.status_code} {r.json()}')
-            return {'country': 'DE'}
+            return {'id': 1, 'country': 'DE'}
         return r.json()
 
     def set_active_channels_cache_key(self) -> None:

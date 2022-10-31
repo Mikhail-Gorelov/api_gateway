@@ -18,9 +18,7 @@ class CheckoutView(GenericAPIView):
         output_data['email'] = serializer.data['credentials']['email']
         output_data['notes'] = serializer.data['order_notes']
         output_data['phone_number'] = serializer.data['credentials']['phone_number']
-        # TODO: user id
         payment_service = PaymentService(request=request, url='/api/v1/create-payment-intent/')
         response = payment_service.service_response(method="post", json=output_data)
-        print(response)
-        # TODO: передать эти данные уже на payment + брать данные с текущего пользователя каким-то образом
+        output_data['client_secret'] = response.data.get('clientSecret')
         return Response(output_data)
