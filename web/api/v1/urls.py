@@ -7,4 +7,5 @@ urlpatterns = [
     path('', include('api.v1.products_microservice.urls')),
     path('', include('api.v1.cart_microservice.urls')),
     path('', include('api.v1.checkout.urls')),
+    path('', include('api.v1.payment.urls')),
 ]

@@ -33,7 +33,10 @@ def get_active_channels() -> list[dict]:
     channels_settings = settings.CHANNEL_SETTINGS
     cache_key = cache.make_key(channels_settings['CACHE']['KEY'])
     if _cache := cache.get(cache_key):
-        return _cache
+        if type(_cache) is dict and _cache.get('detail'):
+            cache.delete(_cache)
+        else:
+            return _cache
     service = CeleryProductsService(url=f"{channels_settings['GET_CHANNELS_URL']}")
     response = service.service_response(method="get")
     data: list[dict] = response.data
@@ -64,7 +67,10 @@ class UserChannelService:
     def set_active_channels_cache_key(self) -> None:
         ip_credentials: dict = self.get_ip_credentials()
         channel_list: list[dict] = get_active_channels()
-        current_channel = find_dict_in_list(channel_list, 'country', ip_credentials['country']) or {'country': 'DE'}
+        current_channel = find_dict_in_list(
+            channel_list, 'country',
+            ip_credentials['country']
+        ) or {'id': 1, 'country': 'DE'}
         self.set_channel_cookie(current_channel=current_channel)
 
     def set_channel_cookie(self, current_channel: dict):

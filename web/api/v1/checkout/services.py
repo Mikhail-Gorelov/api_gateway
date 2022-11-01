@@ -1,13 +1,12 @@
 from typing import NamedTuple
 
 from django.conf import settings
-from microservice_request.services import ConnectionService
+from microservice_request.services import MicroServiceConnect
 from rest_framework.request import Request
-from rest_framework.response import Response
 from api.v1.cart_microservice.services import CartService
 
 
-class PaymentService(ConnectionService):
+class PaymentService(MicroServiceConnect):
     api_key = settings.PAYMENT_API_KEY
     service = settings.PAYMENT_API_URL
     SEND_COOKIES = True
